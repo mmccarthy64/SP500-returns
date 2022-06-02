@@ -2,7 +2,6 @@ import React from 'react'
 
 const Table = (props) => {
     const returns = props.returns
-
     return (
         <div className='table'>
             <table>

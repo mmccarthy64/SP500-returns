@@ -5,7 +5,7 @@ import returns from "./sp500-data.json";
 function App() {
   return (
     <div className="App">
-      <Table returns={returns}/>
+      <Table returns={returns.reverse()}/>
     </div>
   );
 }

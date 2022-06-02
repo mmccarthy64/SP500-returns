@@ -1,6 +1,7 @@
 import React from 'react'
 
-export default function Table() {
+export default function Table(props) {
+    const returns = props.returns
   return (
     <div className='table'>
         <table>
@@ -8,13 +9,18 @@ export default function Table() {
           <tr>
             <th>Year</th>
             <th>Total Return</th>
+            <th>Cumulative Returns</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>2020</th>
-            <th>18.40</th>
-          </tr>
+            {returns.map(data => {
+                // console.log(year)
+                <tr>
+                    <td>{data.year}</td>
+                    <td>{data.totalReturn}</td>
+                </tr>
+                // {console.log(data.totalReturn)}
+            })}
         </tbody>
       </table>
     </div>

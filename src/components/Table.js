@@ -1,24 +1,57 @@
 
 import React from 'react'
 // import Slider from 'rc-slider';
-import { Row, Container, Table } from 'react-bootstrap'
+import { Container, Table } from 'react-bootstrap'
 import 'rc-slider/assets/index.css';
 import TooltipSlider from './TooltipSlider.tsx';
+import { useState } from 'react';
 
 
-const resultTable = (props) => {
+const ResultTable = (props) => {
+
+    const [startYear, setStartYear] = useState(1926);
+
     const returns = props.returns
     const wrapperStyle = { width: 400, margin: 50 };
 
-    // const cumulativeReturns = () => {
+    const changeStartYear = () => {
+        const newStartYear = document.getElementsByClassName('rc-slider-handle rc-slider-handle-1')[0].attributes[5].value
+        setStartYear(newStartYear)
+        const newEndYear = document.getElementsByClassName('rc-slider-handle rc-slider-handle-2')[0].attributes[5].value
+        console.log(newStartYear, newEndYear)
+        // setStartYear(startYear + 1)
+    }
 
+    const mapReturns = (newStartYear, newEndYear) => {
+        const dates = []
+            // if (newStartYear > )
+    }
+        // console.log(returns)
+
+    // const changeEndYear = () => {
+    //     const endYear = document.getElementsByClassName('rc-slider-handle rc-slider-handle-2')[0].attributes[5].value
+    //     console.log(endYear)
     // }
+
+    const yearsToReturn = returns.map((data) => {
+        if(startYear < data.year){
+            console.log(data.year)
+            return <tr>
+                <th>{data.year}</th>
+                <th>{data.totalReturn}</th>
+            </tr>
+        }
+    }).reverse()
     return (
         <Container style={wrapperStyle}>
-            <Row>
-                <TooltipSlider range min={1926}
+                <TooltipSlider
+                    range
+                    min={1926}
                     max={2021}
-                    defaultValue={[1926, 2021]} />
+                    defaultValue={[1926, 2021]} 
+                    returns={returns}
+                    onChange={changeStartYear}
+                     />
                 <Table>
                     <thead>
                         <tr>
@@ -28,17 +61,19 @@ const resultTable = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {returns.map((data) => (
+                        {yearsToReturn}
+                        {/* {mapReturns} */}
+                        {/* {returns.map((data) => (
                             <tr key={data.year}>
                                 <td>{data.year}</td>
                                 <td>{data.totalReturn}</td>
                             </tr>
-                        )).reverse()}
+                        )).reverse()} */}
+                        {/* {console.log(returns)} */}
                     </tbody>
                 </Table>
-            </Row>
             </Container>
     )
 }
 
-export default resultTable;
+export default ResultTable;

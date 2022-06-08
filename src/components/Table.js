@@ -4,92 +4,57 @@ import React from 'react'
 import { Container, Table } from 'react-bootstrap'
 import 'rc-slider/assets/index.css';
 import TooltipSlider from './TooltipSlider.tsx';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const ResultTable = (props) => {
 
     const [startYear, setStartYear] = useState(1925);
-    const [endYear, setEndYear] = useState(2021);
-
+    const [endYear, setEndYear] = useState(2022);
     const returns = props.returns
+    const wrapperStyle = { width: 400, margin: 50 };
     let returnsWCumulative = []
 
-    const wrapperStyle = { width: 400, margin: 50 };
-
-    // returns.reduce((previousValue, currentValue, i) => {
-    //     if (previousValue !== undefined){
-    //         console.log(previousValue, currentValue, i)
-
-    //     }
-    // } )
-
-    useEffect(() => {
-        return () => {
-            console.log("loaded")
-            calculateCumulative()
-        };
-    }, []);
+    returns.map(v => {
+        if (startYear < v.year && endYear > v.year)
+        // v.cumulative = (((1 + v.totalReturn) ** (1/(endYear - startYear)) - 1)*100).toFixed(2) + '%'
+        returnsWCumulative.push(v)
+    })
 
     const changeStartYear = () => {
         const newStartYear = document.getElementsByClassName('rc-slider-handle rc-slider-handle-1')[0].attributes[5].value
         setStartYear(newStartYear - 1)
         const newEndYear = document.getElementsByClassName('rc-slider-handle rc-slider-handle-2')[0].attributes[5].value
         setEndYear(newEndYear)
-        // console.log(newStartYear, newEndYear)
-        // calculateCumulative()
+        console.log(newStartYear, newEndYear)
+        calculateCumulative()
     }
 
     const calculateCumulative = () => {
-        returns.map(data => {
-            console.log(data.totalReturn)
-            data.prevReturn = 0
-            returnsWCumulative.push(data.totalReturn)
-        })
-        // console.log(returnsWCumulative.splice(1))
-        const previReturn = returnsWCumulative.splice(1)
-        console.log(previReturn)
-        console.log(returns)
-        returns.map((v, i) => {
-            v.prevReturn = previReturn[i]
-
-        })
-        // console.log(returnsWCumulative.splice(1))
-
-        // let newArr = prevReturn.map((v, i) => ({ prevReturn: prevReturn})) 
-        // let newnew = returns.map((v, i) => {
-        //     ({...v, prevReturn: returnsWCumulative})
+        // console.log(returns)
+        // returnsWCumulative[0]
+        let startingYear = returnsWCumulative[returnsWCumulative.length - 1]
+        startingYear.cumulative = 0
+        console.log(startYear, parseInt(endYear), returnsWCumulative, startingYear)
+        let newArr = returnsWCumulative.slice(1)
+        console.log(newArr)
+        // newArr.map(v => {
+        //     console.log(startingYear)
+        //     v.cumulative = startingYear
+            // v.cumulative = (((1 + v.totalReturn) ** (1/(parseInt(endYear) - startingYear.year)) - 1)*100).toFixed(2) + '%'
+        //     returnsWCumulative.push(v)
         // })
-            
-        // console.log(newnew)
-        // return returnsWCumulative
-
-        // let returnData = Array.from(document.getElementsByClassName('totalReturn')) 
-        // returnData.map(data => {
-        //     {...data,}
-        // })
-        // for ( let i = startYear; i < endYear; i++){
-        //     let startReturn = parseFloat(returnData)
-        //     console.log(returnData)
-        //     const endReturn = parseFloat(document.getElementsByClassName('totalReturn')[i + 1].innerText)
-        //     let cumulativeCol = document.getElementById('cumulative').value
-        //     const cumulative = (((endReturn / startReturn) - 1)*100).toFixed(2)
-        //     cumulativeCol = cumulative
-        //     console.log(startReturn, endReturn, cumulative, cumulativeCol)
-        //     console.log(endYear, startYear, i)
-        //     setCumulative(cumulative)
-        // }
+        // console.log(returnsWCumulative[returnsWCumulative.length - 1])
     }
 
 
     const yearsToReturn = 
-        returnsWCumulative.map((data, i) => {
+        returnsWCumulative.map(data => {
         if(startYear < data.year && endYear > data.year){
             return (
                 <tr key={data.year}>
                     <th>{data.year}</th>
                     <th className='totalReturn'>{data.totalReturn}</th>
-                    {/* <th>{data.cumulative}</th> */}
-                    <th></th>
+                    <th className='cumulative'>{data.cumulative}</th>
                 </tr>
             )
         }

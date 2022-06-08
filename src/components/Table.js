@@ -4,8 +4,7 @@ import React from 'react'
 import { Container, Table } from 'react-bootstrap'
 import 'rc-slider/assets/index.css';
 import TooltipSlider from './TooltipSlider.tsx';
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
 
 const ResultTable = (props) => {
 
@@ -13,45 +12,96 @@ const ResultTable = (props) => {
     const [endYear, setEndYear] = useState(2021);
 
     const returns = props.returns
+    let returnsWCumulative = []
+
     const wrapperStyle = { width: 400, margin: 50 };
+
+    // returns.reduce((previousValue, currentValue, i) => {
+    //     if (previousValue !== undefined){
+    //         console.log(previousValue, currentValue, i)
+
+    //     }
+    // } )
+
+    useEffect(() => {
+        return () => {
+            console.log("loaded")
+            calculateCumulative()
+        };
+    }, []);
 
     const changeStartYear = () => {
         const newStartYear = document.getElementsByClassName('rc-slider-handle rc-slider-handle-1')[0].attributes[5].value
-        setStartYear(newStartYear)
+        setStartYear(newStartYear - 1)
         const newEndYear = document.getElementsByClassName('rc-slider-handle rc-slider-handle-2')[0].attributes[5].value
         setEndYear(newEndYear)
-        console.log(newStartYear, newEndYear)
-        // setStartYear(startYear + 1)
+        // console.log(newStartYear, newEndYear)
+        // calculateCumulative()
     }
 
-    const mapReturns = (newStartYear, newEndYear) => {
-        const dates = []
-            // if (newStartYear > )
+    const calculateCumulative = () => {
+        returns.map(data => {
+            console.log(data.totalReturn)
+            data.prevReturn = 0
+            returnsWCumulative.push(data.totalReturn)
+        })
+        // console.log(returnsWCumulative.splice(1))
+        const previReturn = returnsWCumulative.splice(1)
+        console.log(previReturn)
+        console.log(returns)
+        returns.map((v, i) => {
+            v.prevReturn = previReturn[i]
+
+        })
+        // console.log(returnsWCumulative.splice(1))
+
+        // let newArr = prevReturn.map((v, i) => ({ prevReturn: prevReturn})) 
+        // let newnew = returns.map((v, i) => {
+        //     ({...v, prevReturn: returnsWCumulative})
+        // })
+            
+        // console.log(newnew)
+        // return returnsWCumulative
+
+        // let returnData = Array.from(document.getElementsByClassName('totalReturn')) 
+        // returnData.map(data => {
+        //     {...data,}
+        // })
+        // for ( let i = startYear; i < endYear; i++){
+        //     let startReturn = parseFloat(returnData)
+        //     console.log(returnData)
+        //     const endReturn = parseFloat(document.getElementsByClassName('totalReturn')[i + 1].innerText)
+        //     let cumulativeCol = document.getElementById('cumulative').value
+        //     const cumulative = (((endReturn / startReturn) - 1)*100).toFixed(2)
+        //     cumulativeCol = cumulative
+        //     console.log(startReturn, endReturn, cumulative, cumulativeCol)
+        //     console.log(endYear, startYear, i)
+        //     setCumulative(cumulative)
+        // }
     }
-        // console.log(returns)
 
-    // const changeEndYear = () => {
-    //     const endYear = document.getElementsByClassName('rc-slider-handle rc-slider-handle-2')[0].attributes[5].value
-    //     console.log(endYear)
-    // }
 
-    const yearsToReturn = returns.map((data) => {
-        if(startYear <= data.year && endYear >= data.year){
-            console.log(data.year)
-            return <tr>
-                <th>{data.year}</th>
-                <th>{data.totalReturn}</th>
-            </tr>
+    const yearsToReturn = 
+        returnsWCumulative.map((data, i) => {
+        if(startYear < data.year && endYear > data.year){
+            return (
+                <tr key={data.year}>
+                    <th>{data.year}</th>
+                    <th className='totalReturn'>{data.totalReturn}</th>
+                    {/* <th>{data.cumulative}</th> */}
+                    <th></th>
+                </tr>
+            )
         }
     }).reverse()
+
     return (
         <Container style={wrapperStyle}>
                 <TooltipSlider
                     range
-                    min={1925}
+                    min={1926}
                     max={2021}
-                    defaultValue={[1925, 2021]} 
-                    returns={returns}
+                    defaultValue={[1926, 2021]} 
                     onChange={changeStartYear}
                      />
                 <Table>
@@ -64,14 +114,6 @@ const ResultTable = (props) => {
                     </thead>
                     <tbody>
                         {yearsToReturn}
-                        {/* {mapReturns} */}
-                        {/* {returns.map((data) => (
-                            <tr key={data.year}>
-                                <td>{data.year}</td>
-                                <td>{data.totalReturn}</td>
-                            </tr>
-                        )).reverse()} */}
-                        {/* {console.log(returns)} */}
                     </tbody>
                 </Table>
             </Container>
